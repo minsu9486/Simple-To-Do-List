@@ -1,0 +1,225 @@
+const { Input, Icon, Button, Form, Checkbox } = antd;
+const FormItem = Form.Item;
+
+let oa_Items = [];
+oa_Items.push({index: 1, value: "Make a To-Do List", isDone: false});
+oa_Items.push({index: 2, value: "Learn React & Ant Design", isDone: true});
+oa_Items.push({index: 3, value: "Read JavaScript ES6 Tutorial", isDone: true});
+
+class OA_App extends React.Component {
+  constructor (props) {
+    super(props);
+    this.addItem = this.addItem.bind(this);
+    this.markTodoDone = this.markTodoDone.bind(this);
+    this.setItemInputText = this.setItemInputText.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.state = {oa_Items : oa_Items};
+  }
+  
+  addItem (_item) {
+    oa_Items.unshift ({
+      index : oa_Items.length + 1, 
+      value : _item.newItemValue, 
+      isDone : false
+    });
+    
+    this.setState({oa_Items : oa_Items});
+  }
+  
+  markTodoDone (_itemIndex) {
+    var item = oa_Items[_itemIndex];
+    item.isDone = !item.isDone;
+    this.setState({oa_Items : oa_Items});  
+  }
+  
+  setItemInputText (_info) {
+    var item = oa_Items[_info.index];
+    item.value = _info.value;
+    this.setState({oa_Items : oa_Items});
+  }
+  
+  removeItem (_itemIndex) {
+    oa_Items.splice(_itemIndex, 1);
+    this.setState({oa_Items : oa_Items});
+  }
+  
+  render() {
+    return (
+      <div className = "container">
+        <OA_Header />
+        <OA_AddItem addItem = {this.addItem} />
+        <OA_List
+          items = {this.props.initItems}
+          markTodoDone = {this.markTodoDone}
+          setItemInputText = {this.setItemInputText}
+          removeItem = {this.removeItem}
+          />
+      </div>
+    );
+  }
+}
+
+class OA_Item extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onChangeDone = this.onChangeDone.bind(this);
+    this.onChangeItemInputText = this.onChangeItemInputText.bind(this);
+    this.onClickRemove = this.onClickRemove.bind(this);
+  }
+   
+  onChangeDone() {
+    let index = parseInt(this.props.index);
+    this.props.markTodoDone(index);
+  }
+  
+  onChangeItemInputText = (e) => {
+    let index = parseInt(this.props.index)
+    let value = e.target.value;
+    this.props.setItemInputText({index, value});
+  }
+  
+  onClickRemove() {
+    let index = parseInt(this.props.index);
+    this.props.removeItem(index);
+  }
+            
+  render () {
+    let item_Input_Content = this.props.item.isDone
+                             ? "item_Input_Content_Done" : "item_Input_Content_Undone";
+    
+    return(
+      <div className = "item_Form">
+        <Form layout="inline">
+          
+          <FormItem>
+            <Checkbox
+              className = "item_CheckBox_Done"
+              checked = {this.props.item.isDone}
+              onChange = {this.onChangeDone}
+              ></Checkbox>
+          </FormItem>
+          
+          <FormItem>
+             <Input
+               className = {item_Input_Content}
+               size = "small"
+               value = {this.props.item.value}
+               disabled = {this.props.item.isDone}
+               onChange = {this.onChangeItemInputText}
+               />
+          </FormItem>
+          
+          <FormItem>
+            <Button
+              className = "item_Button_Remove"
+              type = "danger"
+              icon = "close"
+              shape = "circle"
+              size = "default"
+              onClick = {this.onClickRemove}
+              ></Button>
+          </FormItem>
+          
+        </Form>
+      </div>
+    );
+  }
+}
+
+class OA_Header extends React.Component {
+  render () {
+    return <h1 className="header_Text_Title">To-Do List with Ant Design</h1>
+  }
+}
+
+class OA_AddItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onSubmitAdd = this.onSubmitAdd.bind(this);
+    this.state = { inputText: '', };
+  }
+  
+  emitEmpty = () => {
+    this.setState({ inputText : '' });
+  }
+  
+  onChangeAddItemInputText = (e) => {
+    this.setState({ inputText : e.target.value });
+  }
+  
+  onSubmitAdd = (e) => {
+    e.preventDefault();
+    var newItemValue = this.state.inputText;
+    
+    // var newItem = {
+    //   index : oa_Items.length + 1,
+    //   value : this.state.inputText,
+    //   isDone : false
+    // };
+    
+    if (newItemValue) {
+      this.props.addItem({newItemValue});
+      this.emitEmpty();
+    }
+  }
+  
+  render() {
+    const { inputText } = this.state;
+    const suffix_Clear = inputText ? <Icon type = "close-circle" onClick = { this.emitEmpty } />
+                                   : null;
+    
+    return (
+      <div className = "addItem_Form">
+        <Form onSubmit = {this.onSubmitAdd} layout="inline">
+          
+           <FormItem>
+             <Input
+               className = "addItem_Input_WriteText"
+               placeholder = "Write your task"
+               prefix = {<Icon type = "arrow-right" style = {{ color: 'rgba(0,0,0,.25)' }} />}
+               suffix = {suffix_Clear}
+               value = {inputText}
+               onChange = {this.onChangeAddItemInputText}
+               />
+          </FormItem>
+        
+           <FormItem>
+             <Button
+               className = "addItem_Button_AddItem"
+               htmlType = "submit"
+               type = "primary"
+               size = "large"
+               >
+               <Icon type = "plus" />
+             </Button>
+          </FormItem>
+          
+          </Form>
+      </div>
+    );
+  }
+}
+
+class OA_List extends React.Component { 
+  render () {
+    var items = this.props.items.map((item, index) => {
+      return (
+        <OA_Item
+          key = {index}
+          item = {item}
+          index = {index}
+          removeItem = {this.props.removeItem}
+          setItemInputText = {this.props.setItemInputText}
+          markTodoDone = {this.props.markTodoDone}
+          />
+      );
+    });
+    
+    return (
+      // ul : unordered (bulleted) list
+      <ul className = "list_List"> {items} </ul>
+    );
+  }
+}
+
+ReactDOM.render(<OA_App initItems = {oa_Items} />, mountNode);

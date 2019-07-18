@@ -1,0 +1,78 @@
+@import 'antd/dist/antd.css';
+
+body {
+  margin : 0;
+  padding : 0;
+  background : #FFEFDE;
+}
+
+.container {
+  width : 100%;
+  max-width : 400px;
+  margin : 0 auto;
+}
+
+.header_Text_Title {
+  hight : 0px;
+  width : 100%;
+  font-family : 'Palatino', sans-serif;
+  text-align : center;
+  font-size : 1.4rem;
+  color : #56596A;
+  font-weight : bold;
+  margin : 20px 0px;
+}
+
+.addItem_Form {
+  width : 600px;
+  margin : 0px 10px;
+}
+
+  .addItem_Input_WriteText {
+    width : 330px;
+  }
+
+    .anticon-close-circle {
+      cursor: pointer;
+      color: #ccc;
+      transition: color 0.3s;
+      font-size: 14px;
+    }
+    .anticon-close-circle:hover {
+      color: #999;
+    }
+    .anticon-close-circle:active {
+      color: #666;
+    }
+
+  .addItem_Button_AddItem {}
+
+.list_List {
+  width : 600px;
+  margin : 15px 10px;
+}
+
+.item_Form {}
+
+  .item_CheckBox_Done {
+    margin : 0px -10px;
+  }
+
+  .item_Input_Content_Undone {
+    width : 250px;
+    hight : 10px;
+    font-family : 'Comic Sans MS', sans-serif;
+    color : #1890FF;
+  }
+
+  .item_Input_Content_Done {
+    width : 250px;
+    hight : 10px;
+    font-family : 'Comic Sans MS', sans-serif;
+    color : #B0B0B0;
+    text-decoration : line-through;
+      }
+
+  .item_Button_Remove {
+    margin : 0px -10px;
+  }
